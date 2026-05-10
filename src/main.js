@@ -1,5 +1,5 @@
-import { scaleFactor } from "./src/constants.js";
-import { k } from "./src/kaboomCtx.js";
+import { scaleFactor } from "./constants.js";
+import { k } from "./kaboomCtx.js";
 
 k.loadSprite("spritesheet", "./spritesheet.png", {
   sliceX: 39,

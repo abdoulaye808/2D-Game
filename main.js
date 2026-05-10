@@ -1,5 +1,5 @@
-import { scaleFactor } from "./constants.js";
-import { k } from "./kaboomCtx.js";
+import { scaleFactor } from "./src/constants.js";
+import { k } from "./src/kaboomCtx.js";
 
 k.loadSprite("spritesheet", "./spritesheet.png", {
   sliceX: 39,
@@ -22,7 +22,7 @@ k.scene("main", async () => {
     const mapData = await (await fetch("./map.json")).json()
     const layers = mapData.layers;
 
-    const map = k.make([k.sprite("map"), k.pos(o), k.scale(scaleFactor)])
+    const map = k.make([k.sprite("map"), k.pos(0), k.scale(scaleFactor)])
     
     const player = k.make([
         k.sprite("spritesheet", { anim: "idle-down" }),
@@ -54,8 +54,8 @@ k.scene("main", async () => {
                 ]);
 
                 if (boundary.name) {
-                    player.oncllide(boundary.name, () => {
-                        player.isIndialogue = true;
+                    player.onCollide(boundary.name, () => {
+                        player.isInDialogue = true;
                         
                     });
                 }

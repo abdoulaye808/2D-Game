@@ -12,14 +12,31 @@ k.loadSprite("spritesheet", "/spritesheet.png", {
     "walk-side": { from: 975, to: 978, loop: true, speed: 8 },
     "idle-up": 1014,
     "walk-up": { from: 1014, to: 1017, loop: true, speed: 8 },
-  },
+    },
 });
 
 k.loadSprite("map", "/map.png");
 
 k.setBackground(k.Color.fromHex("#311047"));
 
+k.loadSound(
+  "amongus",
+  "/sound/among-us-text-sound-sci-fi-space-text-science-fiction-beep-chungus43a.mp3",
+);
+
 k.scene("main", async () => {
+
+    const windmill = document.getElementById("Windmill");
+
+    document.addEventListener(
+      "click",
+      () => {
+        windmill.loop = true;
+        windmill.play();
+      },
+      { once: true },
+    );
+
     const mapData = await (await fetch("/map.json")).json()
     const layers = mapData.layers;
 
@@ -42,6 +59,21 @@ k.scene("main", async () => {
         "player", 
     ]);
 
+    let canPlaySound = true;
+
+    player.onCollide("collidable", () => {
+        console.log("hit!");
+
+      if (!canPlaySound) return;
+
+      canPlaySound = false;
+      k.play("amongus");
+
+      setTimeout(() => {
+        canPlaySound = true;
+      }, 200);
+    });
+
     for (const layer of layers) {
         if (layer.name === "boundaries") {
             for (const boundary of layer.objects) {
@@ -50,7 +82,8 @@ k.scene("main", async () => {
                     shape: new k.Rect( k.vec2(0), boundary.width, boundary.height),
                   }),
                   k.body({ isStatic: true }),
-                  k.pos(boundary.x, boundary.y),
+                    k.pos(boundary.x, boundary.y),
+                  "collidable",
                   boundary.name,
                 ]);
 
@@ -90,6 +123,7 @@ k.scene("main", async () => {
 
     k.onMouseDown((mouseBtn) => {
         if (mouseBtn !== "left" || player.isInDialogue) return;
+
 
         const worldMousePos = k.toWorld(k.mousePos());
         player.moveTo(worldMousePos, player.speed);
